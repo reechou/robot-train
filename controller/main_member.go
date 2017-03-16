@@ -29,6 +29,12 @@ var (
 		"咱们等会去KTV吧?",
 		"今天奢侈了一把,享受了一把头等舱",
 		"今天我请假了,放假的心情真好",
+		"明天我要去日本啦,哈哈哈",
+		"我在香港买了很多好东西,要不要看看",
+		"如果我是dj你会爱我吗",
+		"你的眼神让我看到了你的纯洁",
+		"留下太多的故事,心灵得到解脱",
+		"你觉得什么时候是最美的时刻?",
 	}
 )
 
@@ -157,9 +163,13 @@ func (self *WxMainTrainMember) check() {
 			tulingReply, err := self.tulingExt.SimpleCallV1(reply, user)
 			if err != nil {
 				holmes.Error("tuling get new reply error: %v", err)
-				newReply = reply
+				newReply = self.getTopic()
 			} else {
-				newReply = tulingReply
+				if tulingReply == reply {
+					newReply = self.getTopic()
+				} else {
+					newReply = tulingReply
+				}
 			}
 		}
 		var sendReq robot_proto.SendMsgInfo
