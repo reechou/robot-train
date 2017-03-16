@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"time"
-	"sync"
 	"fmt"
-	
+	"sync"
+	"time"
+
 	"github.com/reechou/holmes"
 	"github.com/reechou/robot-train/config"
 	"github.com/reechou/robot-train/ext"
@@ -37,11 +37,11 @@ type WxMainTrainMember struct {
 	tulingExt *ext.TulingExt
 	robotExt  *ext.RobotExt
 
-	topicIdx int
-	trainListMutex sync.Mutex
-	trainList []robot_proto.GroupUserInfo
+	topicIdx        int
+	trainListMutex  sync.Mutex
+	trainList       []robot_proto.GroupUserInfo
 	trainReplyMutex sync.Mutex
-	trainReply map[string]string
+	trainReply      map[string]string
 
 	stop chan struct{}
 	done chan struct{}
@@ -49,11 +49,12 @@ type WxMainTrainMember struct {
 
 func NewWxMainTrainMember(cfg *config.Config, tulingExt *ext.TulingExt, robotExt *ext.RobotExt) *WxMainTrainMember {
 	wmtm := &WxMainTrainMember{
-		cfg:       cfg,
-		tulingExt: tulingExt,
-		robotExt:  robotExt,
-		stop:      make(chan struct{}),
-		done:      make(chan struct{}),
+		cfg:        cfg,
+		tulingExt:  tulingExt,
+		robotExt:   robotExt,
+		trainReply: make(map[string]string),
+		stop:       make(chan struct{}),
+		done:       make(chan struct{}),
 	}
 	err := wmtm.getTrainList()
 	if err != nil {
@@ -84,7 +85,7 @@ func (self *WxMainTrainMember) runGetTrainList() {
 
 func (self *WxMainTrainMember) getTrainList() error {
 	req := &robot_proto.RobotGetGroupMemberListReq{
-		WechatNick: self.cfg.MainMember,
+		WechatNick:    self.cfg.MainMember,
 		GroupNickName: self.cfg.TrainPool,
 	}
 	trainList, err := self.robotExt.GetGroupMemberList(req)
@@ -102,8 +103,8 @@ func (self *WxMainTrainMember) getTrainList() error {
 		}
 		findReq := &robot_proto.RobotFindFriendReq{
 			WechatNick: self.cfg.MainMember,
-			UserName: v.UserName,
-			NickName: v.NickName,
+			UserName:   v.UserName,
+			NickName:   v.NickName,
 		}
 		uf, err := self.robotExt.FindFriend(findReq)
 		if err != nil {
@@ -113,7 +114,7 @@ func (self *WxMainTrainMember) getTrainList() error {
 		if uf == nil {
 			addReq := &robot_proto.RobotAddFriendReq{
 				WechatNick: self.cfg.MainMember,
-				UserName: v.UserName,
+				UserName:   v.UserName,
 			}
 			err = self.robotExt.AddFriend(addReq)
 			if err != nil {
@@ -142,7 +143,7 @@ func (self *WxMainTrainMember) run() {
 func (self *WxMainTrainMember) check() {
 	self.trainListMutex.Lock()
 	defer self.trainListMutex.Unlock()
-	
+
 	for _, v := range self.trainList {
 		if v.NickName == "Mr.REE" {
 			continue
@@ -180,14 +181,14 @@ func (self *WxMainTrainMember) check() {
 func (self *WxMainTrainMember) TrainReply(user, reply string) {
 	self.trainReplyMutex.Lock()
 	defer self.trainReplyMutex.Unlock()
-	
+
 	self.trainReply[user] = reply
 }
 
 func (self *WxMainTrainMember) getReply(user string) string {
 	self.trainReplyMutex.Lock()
 	defer self.trainReplyMutex.Unlock()
-	
+
 	return self.trainReply[user]
 }
 
@@ -196,6 +197,6 @@ func (self *WxMainTrainMember) user(username string) string {
 }
 
 func (self *WxMainTrainMember) getTopic() string {
-	self.topicIdx = (self.topicIdx+1) % len(TRAIN_TOPIC)
+	self.topicIdx = (self.topicIdx + 1) % len(TRAIN_TOPIC)
 	return TRAIN_TOPIC[self.topicIdx]
 }
