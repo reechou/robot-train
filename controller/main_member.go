@@ -48,6 +48,7 @@ type WxMainTrainMember struct {
 	trainList       []robot_proto.GroupUserInfo
 	trainReplyMutex sync.Mutex
 	trainReply      map[string]string
+	changeTopicTime int64
 
 	stop chan struct{}
 	done chan struct{}
@@ -149,6 +150,13 @@ func (self *WxMainTrainMember) run() {
 func (self *WxMainTrainMember) check() {
 	self.trainListMutex.Lock()
 	defer self.trainListMutex.Unlock()
+	
+	var ifChangeTopic bool
+	now := time.Now().Unix()
+	if now - self.changeTopicTime > 7200 {
+		ifChangeTopic = true
+		self.changeTopicTime = now
+	}
 
 	for _, v := range self.trainList {
 		if v.NickName == "Mr.REE" || v.NickName == self.cfg.MainMember {
@@ -168,7 +176,12 @@ func (self *WxMainTrainMember) check() {
 				if tulingReply == reply {
 					newReply = self.getTopic()
 				} else {
-					newReply = tulingReply
+					if ifChangeTopic {
+						holmes.Debug("too long time, start to change topic")
+						newReply = self.getTopic()
+					} else {
+						newReply = tulingReply
+					}
 				}
 			}
 		}
