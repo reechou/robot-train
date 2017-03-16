@@ -75,7 +75,7 @@ func (self *WxMainTrainMember) runGetTrainList() {
 	holmes.Debug("start run get train list")
 	for {
 		select {
-		case <-time.After(3 * time.Minute):
+		case <-time.After(5 * time.Minute):
 			self.getTrainList()
 		case <-self.stop:
 			return
@@ -131,7 +131,7 @@ func (self *WxMainTrainMember) run() {
 	holmes.Debug("start run train")
 	for {
 		select {
-		case <-time.After(2 * time.Minute):
+		case <-time.After(3 * time.Minute):
 			self.check()
 		case <-self.stop:
 			close(self.done)
