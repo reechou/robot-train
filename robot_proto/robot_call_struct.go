@@ -39,9 +39,9 @@ type RobotGroupTirenReq struct {
 }
 
 type RobotGetGroupMemberListReq struct {
-	WechatNick     string `json:"wechatNick"`
-	GroupUserName  string `json:"groupUserName"`
-	GroupNickName  string `json:"groupNickName"`
+	WechatNick    string `json:"wechatNick"`
+	GroupUserName string `json:"groupUserName"`
+	GroupNickName string `json:"groupNickName"`
 }
 
 type RobotAddFriendReq struct {

@@ -12,10 +12,10 @@ import (
 
 type Logic struct {
 	sync.Mutex
-	
+
 	tulingExt *ext.TulingExt
 	robotExt  *ext.RobotExt
-	mt *WxMainTrainMember
+	mt        *WxMainTrainMember
 
 	cfg *config.Config
 }

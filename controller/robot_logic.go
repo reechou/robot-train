@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	
+
 	"github.com/reechou/holmes"
 	"github.com/reechou/robot-train/robot_proto"
 )

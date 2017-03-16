@@ -87,14 +87,14 @@ func (self *TulingExt) SimpleCall(msg string, userId int) (string, error) {
 			result += "\n"
 		}
 	}
-	
+
 	return result, nil
 }
 
 func (self *TulingExt) SimpleCallV1(msg string, userId string) (string, error) {
 	request := &TulingRequestV1{
-		Key: self.key,
-		Info: msg,
+		Key:    self.key,
+		Info:   msg,
 		UserId: userId,
 	}
 	reqBytes, err := json.Marshal(request)
@@ -103,7 +103,7 @@ func (self *TulingExt) SimpleCallV1(msg string, userId string) (string, error) {
 		return "", err
 	}
 	holmes.Debug("tuling request: %s", string(reqBytes))
-	
+
 	req, err := http.NewRequest("POST", self.cfg.Tuling.V1Url, bytes.NewBuffer(reqBytes))
 	if err != nil {
 		holmes.Error("http new request error: %v", err)
@@ -127,7 +127,7 @@ func (self *TulingExt) SimpleCallV1(msg string, userId string) (string, error) {
 		holmes.Error("json decode error: %v [%s]", err, string(rspBody))
 		return "", err
 	}
-	
+
 	result := ""
 	switch response.Code {
 	case TULING_V1_RESULT_SUCCESS_TEXT:
@@ -138,6 +138,6 @@ func (self *TulingExt) SimpleCallV1(msg string, userId string) (string, error) {
 		holmes.Error("tuling v1 simple call result code error: %d %v", response.Code, response)
 		return "", fmt.Errorf("tuling v1 simple call result error.")
 	}
-	
+
 	return result, nil
 }

@@ -31,9 +31,9 @@ type Config struct {
 	Path    string
 	Host    string
 	Version string
-	
-	TrainPool  string
-	MainMember string
+
+	TrainPool       string
+	MainMember      string
 	ChangeTopicTime int
 
 	RobotHost

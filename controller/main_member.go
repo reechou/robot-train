@@ -145,7 +145,7 @@ func (self *WxMainTrainMember) check() {
 	defer self.trainListMutex.Unlock()
 
 	for _, v := range self.trainList {
-		if v.NickName == "Mr.REE" {
+		if v.NickName == "Mr.REE" || v.NickName == self.cfg.MainMember {
 			continue
 		}
 		user := self.user(v.UserName)

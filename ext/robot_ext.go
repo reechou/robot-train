@@ -267,13 +267,13 @@ func (self *RobotExt) GetGroupMemberList(request *robot_proto.RobotGetGroupMembe
 
 func (self *RobotExt) AddFriend(request *robot_proto.RobotAddFriendReq) error {
 	// maybe get robot host here
-	
+
 	reqBytes, err := json.Marshal(request)
 	if err != nil {
 		holmes.Error("json encode error: %v", err)
 		return err
 	}
-	
+
 	url := "http://" + self.cfg.RobotHost.Host + ROBOT_ADD_FRIEND_URI
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBytes))
 	if err != nil {
@@ -302,7 +302,7 @@ func (self *RobotExt) AddFriend(request *robot_proto.RobotAddFriendReq) error {
 		holmes.Error("add friend result code error: %d %s", response.Code, response.Msg)
 		return fmt.Errorf("add friend result error.")
 	}
-	
+
 	return nil
 }
 
