@@ -102,8 +102,9 @@ func (self *WxMainTrainMember) getTrainList() error {
 	}
 	holmes.Debug("get train list: %v", trainList)
 	self.trainListMutex.Lock()
-	defer self.trainListMutex.Unlock()
 	self.trainList = trainList
+	self.trainListMutex.Unlock()
+	// check if friend
 	for _, v := range self.trainList {
 		if v.NickName == self.cfg.MainMember {
 			continue
@@ -150,6 +151,13 @@ func (self *WxMainTrainMember) run() {
 func (self *WxMainTrainMember) check() {
 	self.trainListMutex.Lock()
 	defer self.trainListMutex.Unlock()
+	
+	nowTime := time.Now()
+	hour := nowTime.Hour()
+	if hour >= 2 || hour <= 8 {
+		holmes.Debug("train pause in night.")
+		return 
+	}
 	
 	var ifChangeTopic bool
 	now := time.Now().Unix()
