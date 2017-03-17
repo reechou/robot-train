@@ -154,9 +154,9 @@ func (self *WxMainTrainMember) check() {
 	
 	nowTime := time.Now()
 	hour := nowTime.Hour()
-	if hour >= 2 || hour <= 8 {
+	if hour >= 2 && hour <= 8 {
 		holmes.Debug("train pause in night.")
-		return 
+		return
 	}
 	
 	var ifChangeTopic bool
