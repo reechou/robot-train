@@ -137,9 +137,13 @@ func (self *WxMainTrainMember) getTrainList() error {
 
 func (self *WxMainTrainMember) run() {
 	holmes.Debug("start run train")
+	interval := self.cfg.TrainInterval
+	if interval == 0 {
+		interval = 5
+	}
 	for {
 		select {
-		case <-time.After(3 * time.Minute):
+		case <-time.After(time.Duration(interval) * time.Minute):
 			self.check()
 		case <-self.stop:
 			close(self.done)
@@ -151,17 +155,17 @@ func (self *WxMainTrainMember) run() {
 func (self *WxMainTrainMember) check() {
 	self.trainListMutex.Lock()
 	defer self.trainListMutex.Unlock()
-	
+
 	nowTime := time.Now()
 	hour := nowTime.Hour()
 	if hour >= 2 && hour <= 8 {
 		holmes.Debug("train pause in night.")
 		return
 	}
-	
+
 	var ifChangeTopic bool
 	now := time.Now().Unix()
-	if now - self.changeTopicTime > 7200 {
+	if now-self.changeTopicTime > 7200 {
 		ifChangeTopic = true
 		self.changeTopicTime = now
 	}

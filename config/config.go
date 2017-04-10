@@ -35,6 +35,7 @@ type Config struct {
 	TrainPool       string
 	MainMember      string
 	ChangeTopicTime int
+	TrainInterval   int
 
 	RobotHost
 	DBInfo
